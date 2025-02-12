@@ -33,7 +33,7 @@ If your mod is written in Java (and is, hence, a Jar mod), use this method.
 2. **Add the library Jar file into your project as a Java dependency:**
 
 This is a necessary step before you can compile your mod, since the library Jar contains the methods (functions) used to access custom JSON tags.\
-To get the library file, either download the latest release of `CustomJsonLib.jar` (NOT `CustomJsonLibDesktop.jar`) from Releases, or compile your own (See [Building](#building) below).
+To get the library file, either download the latest release of `CustomJsonLib.jar` (NOT `CustomJsonLibCrossPlatform.jar`) from Releases, or compile your own (See [Building](#building) below).
 
 
 Copy the file into a directory called `lib/` you must create on your mod's root directory:
