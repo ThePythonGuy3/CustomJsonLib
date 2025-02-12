@@ -251,7 +251,8 @@ JsonValue JsonLibWrapper.GetRawField(String internalContentName, String fieldNam
 public void init()
 {
     Events.on(EventType.ClientLoadEvent.class, event -> {
-      if (Vars.mods.getMod("pyguy.jsonlib") != null)
+      Mods.LoadedMod jsonLib = Vars.mods.getMod("pyguy.jsonlib");
+      if (jsonLib != null && jsonLib.enabled())
       {
         Vars.content.getBy(ContentType.block).each(blockContent -> {
           if (blockContent instanceof Block block)
