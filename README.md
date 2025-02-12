@@ -287,7 +287,7 @@ public void init()
   
     if (JsonLibWrapper)
     {
-      Vars.content.getBy(ContentType.block).each(blockContent => {
+      Vars.content.getBy(ContentType.block).each(block => {
         let replaceLocalized = JsonLibWrapper.GetBooleanField(block.name, "example-mod-replaceLocalized");
         
         if (replaceLocalized)
