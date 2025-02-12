@@ -26,17 +26,21 @@ jobs:
       - name: Build mod artifact
         run: |
           chmod +x gradlew
-          ./gradlew clean dex
+          ./gradlew clean
+          ./gradlew lib
+          ./gradlew dex
       - name: Upload built mod artifact as a GitHub Action artifact
         uses: actions/upload-artifact@v4
         if: github.event_name == 'push' || github.event_name == 'pull_request'
         with:
           name: CustomJsonLib (zipped)
-          path: build/libs/CustomJsonLibCrossPlatform.jar
+          path: |
+            build/libs/CustomJsonLibCrossPlatform.jar
+            build/libs/CustomJsonLib.jar
           if-no-files-found: error
           compression-level: 0
       - name: Upload built mod artifact into release
         uses: softprops/action-gh-release@v2
         if: github.event_name == 'release' && github.event.action == 'created'
         with:
-          files: build/libs/CustomJsonLibCrossPlatform.jar
+          files: ${{ endsWith(github.event.release.name, 'Library') && 'build/libs/CustomJsonLib.jar' || 'build/libs/CustomJsonLibCrossPlatform.jar' }}

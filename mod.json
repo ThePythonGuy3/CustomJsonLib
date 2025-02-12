@@ -1,6 +1,6 @@
 {
     "displayName": "Custom Json Lib",
-    "description": "Allows Java mods to create and read custom json fields from other mods.",
+    "description": "Allows mods to create and read custom json tags from other mods, acting as libraries for JSON/JS mods.",
     "version": "v1.0",
     "minGameVersion": "146",
     "author": "PyGuy (ThePythonGuy3)",

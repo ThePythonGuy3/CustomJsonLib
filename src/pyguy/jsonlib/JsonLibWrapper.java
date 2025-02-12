@@ -30,11 +30,11 @@ public class JsonLibWrapper
     }
 
     /**
-     * Get an {@link Integer} field from a custom JSON definition.
+     * Get a {@link Long} field from a custom JSON definition.
      *
      * @param internalContentName The internal name of the piece of content that implements the custom JSON definition.
      * @param fieldName           The name of the custom JSON field.
-     * @return The value of the custom JSON field, or {@code null} if it does not exist or is not an {@link Integer}.
+     * @return The value of the custom JSON field, or {@code null} if it does not exist or is not a {@link Long}.
      */
     public static Long GetLongField(String internalContentName, String fieldName)
     {

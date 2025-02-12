@@ -1,39 +1,42 @@
-# Custom JSON Lib for Mindustry
+# <img src="icon.png" alt="Mod Icon" width="32" height="32"/> Custom JSON Lib for Mindustry
 
 Allows [Mindustry](https://github.com/Anuken/Mindustry) Mods to add and read custom JSON tags to act as libraries for other Mindustry Mods.
+
+> [!NOTE]
+> If your mod uses `CustomJsonLib`, `CustomJsonLib` will need to be installed in Mindustry as a mod, either through the Mod Browser or manually. Otherwise, all the functionality implemented herein will not be available.
 
 ## How do I use this library?
 
 <details>
   <summary>I want to implement new JSON tags</summary>
-  
-  ## My mod is written in Java
-  If your mod is written in Java (and is, hence, a Jar mod), use this method.
-  
-  1. **Add the library as a dependency in your** `mod.[h]json` **file:**
-  
-  > You can SKIP this step if your mod supports this library but does not *require* it to function.
-  
-  &nbsp;&nbsp;&nbsp;JSON:
+
+## My mod is written in Java
+If your mod is written in Java (and is, hence, a Jar mod), use this method.
+
+1. **Add the library as a dependency in your** `mod.[h]json` **file:**
+
+> You can SKIP this step if your mod supports this library but does not *require* it to function.
+
+&nbsp;&nbsp;&nbsp;JSON:
   ```json
   "dependencies": [
-    "pyguy.jsonlib"
-  ]
+"pyguy.jsonlib"
+]
   ```
-  &nbsp;&nbsp;&nbsp;HJSON:
+&nbsp;&nbsp;&nbsp;HJSON:
   ```
   dependencies: [
     pyguy.jsonlib
   ]
   ```
-  
-  2. **Add the library Jar file into your project as a Java dependency:**
-  
-  This is a necessary step before you can compile your mod, since the library Jar contains the methods (functions) used to access custom JSON tags.\
-  To get the library file, either download the latest release of `CustomJsonLib.jar` (NOT `CustomJsonLibDesktop.jar`) from Releases, or compile your own (See [Building](#building) below).
-  
-  
-  Copy the file into a directory called `lib/` you must create on your mod's root directory:
+
+2. **Add the library Jar file into your project as a Java dependency:**
+
+This is a necessary step before you can compile your mod, since the library Jar contains the methods (functions) used to access custom JSON tags.\
+To get the library file, either download the latest release of `CustomJsonLib.jar` (NOT `CustomJsonLibDesktop.jar`) from Releases, or compile your own (See [Building](#building) below).
+
+
+Copy the file into a directory called `lib/` you must create on your mod's root directory:
   ```
   - YourAwesomeMod/
     - src/
@@ -42,69 +45,69 @@ Allows [Mindustry](https://github.com/Anuken/Mindustry) Mods to add and read cus
     - lib/
       - CustomJsonLib.jar
   ```
-  
-  Assuming you're using Gradle as your build system, add the Jar file as a dependency in your mod's `build.gradle.kts`:
+
+Assuming you're using Gradle as your build system, add the Jar file as a dependency in your mod's `build.gradle.kts`:
   ```kotlin
   project(":"){
+  // ...
+
+  dependencies{
     // ...
-  
-    dependencies{
-      // ...
-      compileOnly(files(layout.projectDirectory.dir("lib").file("CustomJsonLib.jar")))
-    }
-  
-    // ...
+    compileOnly(files(layout.projectDirectory.dir("lib").file("CustomJsonLib.jar")))
   }
+
+  // ...
+}
   ```
-  If you are using other build systems, ensure that you are adding the library as a Compile Only dependency. This is VERY important and your mod will not work properly otherwise.
-  
-  
-  Do note that most IDEs will not immediately detect the library after this step. Please restart your IDE or reload the Gradle script (ask your favorite Search Engine how to do this) for it to take effect.
-  
-  3. **Use the library**
-  
-  Now the library is part of your project. This does NOT mean it will be shipped with your Jar files, and it makes the files no larger, it just allows for compilation and usage of the library methods.
-  
-  
-  The content table for JSON tags is created and ready to be used from your mod's `init()` method onward. If you plan on checking all content for custom JSON tags, it is recommended to do so after the client loads, like so:
+If you are using other build systems, ensure that you are adding the library as a Compile Only dependency. This is VERY important and your mod will not work properly otherwise.
+
+
+Do note that most IDEs will not immediately detect the library after this step. Please restart your IDE or reload the Gradle script (ask your favorite Search Engine how to do this) for it to take effect.
+
+3. **Use the library**
+
+Now the library is part of your project. This does NOT mean it will be shipped with your Jar files, and it makes the files no larger, it just allows for compilation and usage of the library methods.
+
+
+The content table for JSON tags is created and ready to be used from your mod's `init()` method onward. If you plan on checking all content for custom JSON tags, it is recommended to do so after the client loads, like so:
   ```java
   @Override
-  public void init()
-  {
-    Events.on(EventType.ClientLoadEvent.class, event -> {
-      // Your code here
-    });
-  }
+public void init()
+{
+  Events.on(EventType.ClientLoadEvent.class, event -> {
+    // Your code here
+  });
+}
   ```
-  
-  To know what methods this library supports, see [Using the Library](#using-the-library) below.
-  
+
+To know what methods this library supports, see [Using the Library](#using-the-library) below.
+
   <br/>
-  
-  ## My mod is written in JavaScript and [H]JSON
-  If your mod is written in JavaScript and [H]JSON (and is, hence, a standard Mindustry mod), use this method.
-  
-  1. **Add the library as a dependency in your** `mod.[h]json` **file:**
-  
-  > You can SKIP this step if your mod supports this library but does not *require* it to function.
-  
-  &nbsp;&nbsp;&nbsp;JSON:
+
+## My mod is written in JavaScript and [H]JSON
+If your mod is written in JavaScript and [H]JSON (and is, hence, a standard Mindustry mod), use this method.
+
+1. **Add the library as a dependency in your** `mod.[h]json` **file:**
+
+> You can SKIP this step if your mod supports this library but does not *require* it to function.
+
+&nbsp;&nbsp;&nbsp;JSON:
   ```json
   "dependencies": [
-    "pyguy.jsonlib"
-  ]
+"pyguy.jsonlib"
+]
   ```
-  &nbsp;&nbsp;&nbsp;HJSON:
+&nbsp;&nbsp;&nbsp;HJSON:
   ```
   dependencies: [
     pyguy.jsonlib
   ]
   ```
-  
-  2. **Create a reference to JsonLibWrapper for your mod:**
-  
-  Modded classpaths are not included into Rhino JS by default (this means that you cannot directly access the library from JS, you need some work for it).\
-  For this very reason, you need to create a reference that you can use within your mod. To do this, append this to the end of your `main.js` script:
+
+2. **Create a reference to JsonLibWrapper for your mod:**
+
+Modded classpaths are not included into Rhino JS by default (this means that you cannot directly access the library from JS, you need some work for it).\
+For this very reason, you need to create a reference that you can use within your mod. To do this, append this to the end of your `main.js` script:
   ```javascript
   var JsonLibWrapper = null;
   Events.on(ClientLoadEvent, event => {
@@ -121,44 +124,44 @@ Allows [Mindustry](https://github.com/Anuken/Mindustry) Mods to add and read cus
     }
   });
   ```
-  
-  After this is executed, JsonLibWrapper will have one of two values: `null` if the CustomJsonLib is not currently installed in Mindustry, or the API object that you can use to work with the library otherwise.
-  Do note that only AFTER the client has loaded will JsonLibWrapper have a value, and if CustomJsonLib is not installed in Mindustry, it will not throw an error but rather it will not execute your code at all.
-  
-  3. **Use the library**
-  
-  Now the library is part of your project.\
-  To know what methods this library supports, see [Using the Library](#using-the-library) below
+
+After this is executed, JsonLibWrapper will have one of two values: `null` if the CustomJsonLib is not currently installed in Mindustry, or the API object that you can use to work with the library otherwise.
+Do note that only AFTER the client has loaded will JsonLibWrapper have a value, and if CustomJsonLib is not installed in Mindustry, it will not throw an error but rather it will not execute your code at all.
+
+3. **Use the library**
+
+Now the library is part of your project.\
+To know what methods this library supports, see [Using the Library](#using-the-library) below
 </details>
 
 <br/>
 
 <details>
   <summary>I want to use JSON tags implemented by other Mods</summary>
-  
+
   <br/>
-  
-  To add custom tags implemented by other Mods, follow this structure:
 
-  
-  Let's say you want to add to a block named `weigthedBomb` a tag called `weight` from a mod whose internal name is `physics-mod`, and a tag called `explosionSize` from a mod whose internal name is `super-explosions`.
+To add custom tags implemented by other Mods, follow this structure:
 
-  In your content's [h]json file you'd add the following:
-  
-  &nbsp;&nbsp;&nbsp;JSON (weightedBomb.json):
+
+Let's say you want to add to a block named `weigthedBomb` a tag called `weight` from a mod whose internal name is `physics-mod`, and a tag called `explosionSize` from a mod whose internal name is `super-explosions`.
+
+In your content's [h]json file you'd add the following:
+
+&nbsp;&nbsp;&nbsp;JSON (weightedBomb.json):
   ```json
   {
-    "type": "Block",
+  "type": "Block",
 
-    ...
+  ...
 
-    "customJson": [
-      "physics-mod-weight": 45,
-      "super-explosions-explosionSize": "huge"
-    ]
-  }
+  "customJson": [
+    "physics-mod-weight": 45,
+    "super-explosions-explosionSize": "huge"
+  ]
+}
   ```
-  &nbsp;&nbsp;&nbsp;HJSON (weightedBomb.hjson):
+&nbsp;&nbsp;&nbsp;HJSON (weightedBomb.hjson):
   ```
   type: Block
 
@@ -170,7 +173,7 @@ Allows [Mindustry](https://github.com/Anuken/Mindustry) Mods to add and read cus
   ]
   ```
 
-  > IMPORTANT: `type` here is added for illustration purposes only. The only part that matters is the `customJson` array.
+> IMPORTANT: `type` here is added for illustration purposes only. The only part that matters is the `customJson` array.
 
 </details>
 
@@ -198,6 +201,104 @@ If you want to support these in your own Mods, these are the tags implemented:
 - `physics-mod-volume`: Indicates the volume in L of your Block. (number)
 - `physics-mod-objectType`: Indicates the type of physicsObject your Block is. Options: [`sphere`, `staticMesh`, `breakableObject`] (string)
 ```
+
+## Using the Library
+
+If your mod is using Java, you're gonna have to import the CustomJsonLib package:
+
+```java
+import pyguy.jsonlib.JsonLibWrapper;
+```
+
+### What methods does this library implement (Java and JS):
+
+Read a String custom tag named `fieldName` from a piece of content with the name `internalContentName`.
+```java
+String JsonLibWrapper.GetStringField(String internalContentName, String fieldName);
+```
+
+
+Read a Long (natural number) custom tag named `fieldName` from a piece of content with the name `internalContentName`.
+```java
+Long JsonLibWrapper.GetLongField(String internalContentName, String fieldName);
+```
+
+
+Read a Double (real number) custom tag named `fieldName` from a piece of content with the name `internalContentName`.
+```java
+Double JsonLibWrapper.GetDoubleField(String internalContentName, String fieldName);
+```
+
+
+Read a Boolean custom tag named `fieldName` from a piece of content with the name `internalContentName`.
+```java
+Boolean JsonLibWrapper.GetBooleanField(String internalContentName, String fieldName);
+```
+
+Read a raw custom tag named `fieldName` from a piece of content with the name `internalContentName`. This should be used to read objects and arrays.
+This method returns a [JsonValue](https://github.com/Anuken/Arc/blob/master/arc-core/src/arc/util/serialization/JsonValue.java).
+```java
+JsonValue JsonLibWrapper.GetBooleanField(String internalContentName, String fieldName);
+```
+
+<details>
+  <summary>Example code snippet for Java</summary>
+
+  <br/>
+
+  ```java
+@Override
+public void init()
+{
+    Events.on(EventType.ClientLoadEvent.class, event -> {
+      if (Vars.mods.getMod("pyguy.jsonlib") != null)
+      {
+        Vars.content.getBy(ContentType.block).each(blockContent -> {
+          if (blockContent instanceof Block block)
+          {
+            Boolean replaceLocalized = JsonLibWrapper.GetBooleanField(block.name, "example-mod-replaceLocalized");
+            
+            if (replaceLocalized != null && replaceLocalized)
+            {
+              block.localizedName = "Replaced";
+            }
+          }
+        });
+      }
+    });
+}
+  ```
+</details>
+
+<details>
+  <summary>Example code snippet for JavaScript</summary>
+
+  <br/>
+
+  ```javascript
+  var JsonLibWrapper = null;
+  Events.on(ClientLoadEvent, event => {
+    let jsonLibMod = Vars.mods.getMod("pyguy.jsonlib");
+  
+    if (jsonLibMod)
+    {
+      if (jsonLibMod.enabled()) JsonLibWrapper = jsonLibMod.loader.loadClass("pyguy.jsonlib.JsonLibWrapper").newInstance();
+    }
+  
+    if (JsonLibWrapper)
+    {
+      Vars.content.getBy(ContentType.block).each(blockContent => {
+        let replaceLocalized = JsonLibWrapper.GetBooleanField(block.name, "example-mod-replaceLocalized");
+        
+        if (replaceLocalized)
+        {
+          block.localizedName = "Replaced";
+        }
+      }
+    }
+  });
+  ```
+</details>
 
 ## Building
 
