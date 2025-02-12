@@ -20,8 +20,8 @@ If your mod is written in Java (and is, hence, a Jar mod), use this method.
 &nbsp;&nbsp;&nbsp;JSON:
   ```json
   "dependencies": [
-"pyguy.jsonlib"
-]
+    "pyguy.jsonlib"
+  ]
   ```
 &nbsp;&nbsp;&nbsp;HJSON:
   ```
@@ -49,15 +49,15 @@ Copy the file into a directory called `lib/` you must create on your mod's root 
 Assuming you're using Gradle as your build system, add the Jar file as a dependency in your mod's `build.gradle.kts`:
   ```kotlin
   project(":"){
-  // ...
-
-  dependencies{
     // ...
-    compileOnly(files(layout.projectDirectory.dir("lib").file("CustomJsonLib.jar")))
-  }
 
-  // ...
-}
+    dependencies{
+      // ...
+      compileOnly(files(layout.projectDirectory.dir("lib").file("CustomJsonLib.jar")))
+    }
+
+    // ...
+  }
   ```
 If you are using other build systems, ensure that you are adding the library as a Compile Only dependency. This is VERY important and your mod will not work properly otherwise.
 
@@ -72,12 +72,12 @@ Now the library is part of your project. This does NOT mean it will be shipped w
 The content table for JSON tags is created and ready to be used from your mod's `init()` method onward. If you plan on checking all content for custom JSON tags, it is recommended to do so after the client loads, like so:
   ```java
   @Override
-public void init()
-{
-  Events.on(EventType.ClientLoadEvent.class, event -> {
-    // Your code here
-  });
-}
+  public void init()
+  {
+    Events.on(EventType.ClientLoadEvent.class, event -> {
+      // Your code here
+    });
+  }
   ```
 
 To know what methods this library supports, see [Using the Library](#using-the-library) below.
@@ -94,8 +94,8 @@ If your mod is written in JavaScript and [H]JSON (and is, hence, a standard Mind
 &nbsp;&nbsp;&nbsp;JSON:
   ```json
   "dependencies": [
-"pyguy.jsonlib"
-]
+    "pyguy.jsonlib"
+  ]
   ```
 &nbsp;&nbsp;&nbsp;HJSON:
   ```
@@ -151,15 +151,15 @@ In your content's [h]json file you'd add the following:
 &nbsp;&nbsp;&nbsp;JSON (weightedBomb.json):
   ```json
   {
-  "type": "Block",
+    "type": "Block",
 
-  ...
+    ...
 
-  "customJson": [
-    "physics-mod-weight": 45,
-    "super-explosions-explosionSize": "huge"
-  ]
-}
+    "customJson": [
+      "physics-mod-weight": 45,
+      "super-explosions-explosionSize": "huge"
+    ]
+  }
   ```
 &nbsp;&nbsp;&nbsp;HJSON (weightedBomb.hjson):
   ```
