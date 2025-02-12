@@ -3,7 +3,7 @@
     "description": "Allows Java mods to create and read custom json fields from other mods.",
     "version": "v1.0",
     "minGameVersion": "146",
-    "author": "ThePythonGuy3",
+    "author": "PyGuy (ThePythonGuy3)",
     "java": true,
     "main": "pyguy.jsonlib.JsonLib"
 }
