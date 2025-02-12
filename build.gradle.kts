@@ -141,7 +141,7 @@ project(":"){
 
     val dex = tasks.register<Jar>("dex"){
         inputs.files(jar)
-        archiveFileName = "$modArtifact.jar"
+        archiveFileName = "${modArtifact}CrossPlatform.jar"
 
         val desktopJar = jar.flatMap{it.archiveFile}
         val dexJar = File(temporaryDir, "Dex.jar")
