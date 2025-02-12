@@ -238,7 +238,7 @@ Boolean JsonLibWrapper.GetBooleanField(String internalContentName, String fieldN
 Read a raw custom tag named `fieldName` from a piece of content with the name `internalContentName`. This should be used to read objects and arrays.
 This method returns a [JsonValue](https://github.com/Anuken/Arc/blob/master/arc-core/src/arc/util/serialization/JsonValue.java).
 ```java
-JsonValue JsonLibWrapper.GetBooleanField(String internalContentName, String fieldName);
+JsonValue JsonLibWrapper.GetRawField(String internalContentName, String fieldName);
 ```
 
 <details>
