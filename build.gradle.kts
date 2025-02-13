@@ -24,13 +24,9 @@ plugins{
 val arcVersion: String by project
 val mindustryVersion: String by project
 val mindustryBEVersion: String by project
-val entVersion: String by project
 
 val modName: String by project
 val modArtifact: String by project
-val modFetch: String by project
-val modGenSrc: String by project
-val modGen: String by project
 
 val androidSdkVersion: String by project
 val androidBuildVersion: String by project
