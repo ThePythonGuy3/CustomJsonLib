@@ -1,7 +1,7 @@
 package pyguy.jsonlib;
 
 import arc.Events;
-import arc.struct.ObjectMap;
+import arc.struct.*;
 import arc.util.Log;
 import arc.util.serialization.*;
 import mindustry.Vars;
@@ -11,14 +11,13 @@ import mindustry.game.EventType;
 import mindustry.mod.*;
 
 import java.lang.reflect.Field;
-import java.util.*;
 
 // This class is the internal implementation of the library. You do not need to understand any of the code here to use the library.
 // The public API is in the JsonLibWrapper class.
 public class JsonLib extends Mod
 {
-    private static final HashMap<String, HashMap<String, JsonValue>> customJson = new HashMap<>();
-    private static final ArrayList<JsonValue> latestValues = new ArrayList<>();
+    private static final ObjectMap<String, ObjectMap<String, JsonValue>> customJson = new ObjectMap<>();
+    private static final Seq<JsonValue> latestValues = new Seq<>();
     private static boolean shouldProxy = false;
     private static String modName = "";
 
@@ -109,7 +108,7 @@ public class JsonLib extends Mod
     {
         if (customJson.containsKey(internalContentName))
         {
-            HashMap<String, JsonValue> map = customJson.get(internalContentName);
+            ObjectMap<String, JsonValue> map = customJson.get(internalContentName);
             if (map != null) return map.get(fieldName);
         }
 
@@ -120,7 +119,7 @@ public class JsonLib extends Mod
     public void init()
     {
         Events.on(EventType.ClientLoadEvent.class, event -> {
-            for (String key : customJson.keySet())
+            for (String key : customJson.keys())
             {
                 Log.info("[CustomJsonLib] Custom JSON for key: " + key + " with values: " + customJson.get(key).toString());
             }
@@ -139,13 +138,13 @@ public class JsonLib extends Mod
 
                 if (!customJson.containsKey(fullKey))
                 {
-                    customJson.put(fullKey, new HashMap<>());
+                    customJson.put(fullKey, new ObjectMap<>());
                 }
 
-                HashMap<String, JsonValue> hashMap = customJson.get(fullKey);
+                ObjectMap<String, JsonValue> objectMap = customJson.get(fullKey);
                 for (JsonValue value : latestValues)
                 {
-                    hashMap.put(value.name, value);
+                    objectMap.put(value.name, value);
                 }
             }
 
