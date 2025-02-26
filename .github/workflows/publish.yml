@@ -6,6 +6,9 @@ on:
       - master
     tags:
         - 'v*'
+  release:
+    types:
+      - created
 
 
 permissions:
@@ -42,6 +45,7 @@ jobs:
           fi
 
       - name: Build mod artifact
+        if: github.event_name == 'release' && github.event.action == 'created'
         run: |
           chmod +x gradlew
           ./gradlew clean
@@ -49,7 +53,7 @@ jobs:
 
       - name: Upload built mod artifact as a GitHub Action artifact
         uses: actions/upload-artifact@v4
-        if: github.event_name == 'push' || github.event_name == 'pull_request'
+        if: github.event_name == 'release' && github.event.action == 'created'
         with:
           name: CustomJsonLib (zipped)
           path: build/libs/CustomJsonLibCrossPlatform.jar
