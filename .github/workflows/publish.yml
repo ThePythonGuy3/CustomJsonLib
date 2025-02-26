@@ -1,0 +1,78 @@
+name: Java CI
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+        - 'v*'
+
+
+permissions:
+  contents: write
+
+jobs:
+  buildJar:
+    name: Build and Publish Jar for Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Set Artifact Version
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            # This is a release, so use the release's tag as the version.
+            echo "ARTIFACT_VERSION=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+          elif [ "${GITHUB_REF_TYPE}" = "branch" ] && [ "${GITHUB_REF_NAME}" = "master" ]; then
+            # This is a bleeding-edge, so use the short commit's hash as the version.
+            echo "ARTIFACT_VERSION=$(git rev-parse --short=10 HEAD)" >> $GITHUB_ENV
+          else
+            # Sanity checks.
+            echo "Error: Unsupported branch '${GITHUB_REF_NAME}' or ref type '${GITHUB_REF_TYPE}'" >&2
+            exit 1
+          fi
+
+      - name: Build mod artifact
+        run: |
+          chmod +x gradlew
+          ./gradlew clean
+          ./gradlew dex
+
+      - name: Upload built mod artifact as a GitHub Action artifact
+        uses: actions/upload-artifact@v4
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
+        with:
+          name: CustomJsonLib (zipped)
+          path: build/libs/CustomJsonLibCrossPlatform.jar
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: Upload built mod artifact into release
+        uses: softprops/action-gh-release@v2
+        if: github.event_name == 'release' && github.event.action == 'created'
+        with:
+          files: 'build/libs/CustomJsonLibCrossPlatform.jar'
+          name: CustomJsonLib.jar
+
+      - name: Publish Artifacts to Maven Repository
+        run: |
+          ./gradlew -P version="${ARTIFACT_VERSION}" -D maven.repo.local="$(pwd)/.out" publishToMavenLocal
+          
+          git clone https://${{ secrets.MAVEN_TOKEN_GITHUB }}@github.com/ThePythonGuy3/CustomJSONLibMaven.git --depth=1 ../CustomJSONLibMaven
+          cp -r .out/* ../CustomJSONLibMaven
+          cd ../CustomJSONLibMaven
+          
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Publishing for ${ARTIFACT_VERSION}"
+          git push https://${{ secrets.MAVEN_TOKEN_GITHUB }}@github.com/ThePythonGuy3/CustomJSONLibMaven.git

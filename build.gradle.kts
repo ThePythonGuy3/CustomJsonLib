@@ -19,11 +19,13 @@ buildscript{
 
 plugins{
     java
+    `maven-publish`
 }
 
 val arcVersion: String by project
 val mindustryVersion: String by project
 val mindustryBEVersion: String by project
+val entVersion: String by project
 
 val modName: String by project
 val modArtifact: String by project
@@ -42,6 +44,10 @@ fun mindustry(module: String): String{
     return "com.github.Anuken.Mindustry$module:$mindustryVersion"
 }
 
+fun entity(module: String): String{
+    return "com.github.GlennFolker.EntityAnno$module:$entVersion"
+}
+
 allprojects{
     apply(plugin = "java")
     sourceSets["main"].java.setSrcDirs(listOf(layout.projectDirectory.dir("src")))
@@ -57,11 +63,17 @@ allprojects{
         }
     }
 
+    dependencies{
+        // Downgrade Java 9+ syntax into being available in Java 8.
+        annotationProcessor(entity(":downgrader"))
+    }
+
     repositories{
         // Necessary Maven repositories to pull dependencies from.
         mavenCentral()
         maven("https://oss.sonatype.org/content/repositories/snapshots/")
         maven("https://oss.sonatype.org/content/repositories/releases/")
+        maven("https://raw.githubusercontent.com/GlennFolker/EntityAnnoMaven/main")
 
         // Use Zelaux's non-buggy repository for release Mindustry and Arc builds.
         if(!useJitpack) maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
@@ -81,6 +93,26 @@ allprojects{
     }
 }
 
+fun commonPom(pom: MavenPom){
+    pom.apply{
+        url = "https://github.com/ThePythonGuy3/CustomJSONLibMaven"
+        inceptionYear = "2025"
+
+        licenses{
+            license{
+                name = "GPL-3.0-or-later"
+                url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
+                distribution = "repo"
+            }
+        }
+
+        issueManagement{
+            system = "GitHub Issue Tracker"
+            url = "https://github.com/ThePythonGuy3/CustomJSONLibMaven/issues"
+        }
+    }
+}
+
 project(":"){
     dependencies{
         compileOnly(mindustry(":core"))
@@ -96,7 +128,6 @@ project(":"){
             files(sourceSets["main"].output.resourcesDir),
             configurations.runtimeClasspath.map{conf -> conf.map{if(it.isDirectory) it else zipTree(it)}},
 
-            files(layout.projectDirectory.dir("assets")),
             layout.projectDirectory.file("icon.png"),
             meta
         )
@@ -125,7 +156,7 @@ project(":"){
         }
     }
 
-    val lib = tasks.register<Jar>("lib"){
+    tasks.register<Jar>("lib"){
         archiveFileName = "$modArtifact.jar"
 
         from(
@@ -193,6 +224,22 @@ project(":"){
             Fi(input).copyTo(folder)
 
             logger.lifecycle("Copied :jar output to $folder.")
+        }
+    }
+
+    publishing.publications.register<MavenPublication>("maven")
+    {
+        artifact(tasks["lib"])
+
+        groupId = "com.github.ThePythonGuy3.CustomJSONLib"
+        artifactId = "pyguy.jsonlib"
+
+        pom{
+            name = "CustomJSONLib Maven Library"
+
+            description = "CustomJSONLib Library required to compile Mindustry mods using CustomJSONLib."
+
+            commonPom(this)
         }
     }
 }
