@@ -166,10 +166,14 @@ project(":"){
     }
 
     tasks.register<Jar>("lib"){
+        dependsOn(tasks["compileJava"])
+
         archiveFileName = "$modArtifact.jar"
 
         from(
-            files("src/pyguy/jsonlib/JsonLibWrapper.java").asFileTree
+            fileTree("build/classes/java/main") {
+                include("pyguy/jsonlib/JsonLibWrapper.class")
+            }
         )
 
         metaInf.from(layout.projectDirectory.file("LICENSE"))
