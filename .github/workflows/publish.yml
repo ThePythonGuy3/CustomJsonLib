@@ -44,10 +44,12 @@ jobs:
             exit 1
           fi
 
+      - name: Enable Gradle
+        run: chmod +x gradlew
+
       - name: Build mod artifact
         if: github.event_name == 'release' && github.event.action == 'created'
         run: |
-          chmod +x gradlew
           ./gradlew clean
           ./gradlew dex
 
