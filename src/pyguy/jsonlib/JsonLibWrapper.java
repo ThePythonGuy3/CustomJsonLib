@@ -3,13 +3,15 @@ package pyguy.jsonlib;
 import arc.util.serialization.JsonValue;
 
 /**
- * The public API to interface with the {@link JsonLib} library.
- * <p/>
+ * The public API to interface with the {@link pyguy.jsonlib.JsonLib} library.
+ * <p>
  * All the methods in this class MUST be called within your mod's {@code init()} method or after.
  * Failing to do so will result in unexpected behavior.
  */
 public class JsonLibWrapper
 {
+    private JsonLibWrapper(){}
+
     /**
      * Get a {@link String} field from a custom JSON definition.
      *
@@ -87,8 +89,8 @@ public class JsonLibWrapper
     }
 
     /**
-     * Get a raw {@link JsonValue} field from a custom JSON definition.
-     * <p/>
+     * Get a raw {@link arc.util.serialization.JsonValue} field from a custom JSON definition.
+     * <p>
      * This must be used to get fields that are objects or arrays.
      *
      * @param internalContentName The internal name of the piece of content that implements the custom JSON definition.

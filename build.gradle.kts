@@ -63,6 +63,11 @@ allprojects{
         }
     }
 
+    java{
+        withSourcesJar()
+        withJavadocJar()
+    }
+
     dependencies{
         // Downgrade Java 9+ syntax into being available in Java 8.
         annotationProcessor(entity(":downgrader"))
@@ -91,6 +96,10 @@ allprojects{
             encoding = "UTF-8"
         }
     }
+}
+
+tasks.javadoc{
+    source = files("src/pyguy/jsonlib/JsonLibWrapper.java").asFileTree
 }
 
 fun commonPom(pom: MavenPom){
@@ -160,7 +169,7 @@ project(":"){
         archiveFileName = "$modArtifact.jar"
 
         from(
-            files(sourceSets["main"].output.classesDirs)
+            files("src/pyguy/jsonlib/JsonLibWrapper.java").asFileTree
         )
 
         metaInf.from(layout.projectDirectory.file("LICENSE"))
@@ -230,6 +239,9 @@ project(":"){
     publishing.publications.register<MavenPublication>("maven")
     {
         artifact(tasks["lib"])
+
+        artifact(tasks["sourcesJar"])
+        artifact(tasks["javadocJar"])
 
         groupId = "com.github.ThePythonGuy3.CustomJSONLib"
         artifactId = "pyguy.jsonlib"
