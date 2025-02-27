@@ -63,7 +63,6 @@ jobs:
         run: |
           cp build/libs/CustomJsonLibCrossPlatform.jar build/libs/CustomJsonLib.jar
 
-
       - name: Upload built mod artifact into release
         uses: softprops/action-gh-release@v2
         if: github.event_name == 'release' && github.event.action == 'created'
