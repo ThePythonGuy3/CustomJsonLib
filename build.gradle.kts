@@ -170,6 +170,10 @@ project(":"){
 
         archiveFileName = "$modArtifact.jar"
 
+        from(
+            files(sourceSets["main"].output.classesDirs)
+        )
+
         metaInf.from(layout.projectDirectory.file("LICENSE"))
     }
 
