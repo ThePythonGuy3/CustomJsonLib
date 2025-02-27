@@ -66,7 +66,7 @@ jobs:
         if: github.event_name == 'release' && github.event.action == 'created'
         with:
           files: 'build/libs/CustomJsonLibCrossPlatform.jar'
-          name: CustomJsonLib.jar
+          asset_name: CustomJsonLib.jar
 
       - name: Publish Artifacts to Maven Repository
         if: github.event_name == 'release' && github.event.action == 'created'
