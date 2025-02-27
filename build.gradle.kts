@@ -256,4 +256,25 @@ project(":"){
             commonPom(this)
         }
     }
+
+    publishing.publications.register<MavenPublication>("latestMaven")
+    {
+        artifact(tasks["lib"])
+
+        artifact(tasks["sourcesJar"])
+        artifact(tasks["javadocJar"])
+
+        version = "latest"
+
+        groupId = "com.github.ThePythonGuy3.CustomJSONLib"
+        artifactId = "pyguy.jsonlib"
+
+        pom{
+            name = "CustomJSONLib Maven Library"
+
+            description = "CustomJSONLib Library required to compile Mindustry mods using CustomJSONLib."
+
+            commonPom(this)
+        }
+    }
 }
