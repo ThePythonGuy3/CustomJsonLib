@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    tags:
-        - 'v*'
   release:
     types:
       - created
@@ -61,12 +59,16 @@ jobs:
           if-no-files-found: error
           compression-level: 0
 
+      - name: Rename the artifact before uploading
+        run: |
+          cp build/libs/CustomJsonLibCrossPlatform.jar build/libs/CustomJsonLib.jar
+
+
       - name: Upload built mod artifact into release
         uses: softprops/action-gh-release@v2
         if: github.event_name == 'release' && github.event.action == 'created'
         with:
-          files: 'build/libs/CustomJsonLibCrossPlatform.jar'
-          asset_name: CustomJsonLib.jar
+          files: 'build/libs/CustomJsonLib.jar'
 
       - name: Publish Artifacts to Maven Repository
         if: github.event_name == 'release' && github.event.action == 'created'
