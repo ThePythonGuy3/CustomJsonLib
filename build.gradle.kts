@@ -171,9 +171,7 @@ project(":"){
         archiveFileName = "$modArtifact.jar"
 
         from(
-            fileTree("build/classes/java/main") {
-                include("pyguy/jsonlib/JsonLibWrapper.class")
-            }
+            files(sourceSets["main"].output.classesDirs)
         )
 
         metaInf.from(layout.projectDirectory.file("LICENSE"))
