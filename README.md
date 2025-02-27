@@ -32,28 +32,29 @@ If your mod is written in Java (and is, hence, a Jar mod), use this method.
 
 2. **Add the library Jar file into your project as a Java dependency:**
 
-This is a necessary step before you can compile your mod, since the library Jar contains the methods (functions) used to access custom JSON tags.\
-To get the library file, either download the latest release of `CustomJsonLib.jar` (NOT `CustomJsonLibCrossPlatform.jar`) from Releases, or compile your own (See [Building](#building) below).
+CustomJsonLib is available as a Maven package on GitHub. To include it as a dependency you're going to need to add the repository to your `build.gradle.kts` (or `build.gradle` if you're using Groovy) file:
 
-
-Copy the file into a directory called `lib/` you must create on your mod's root directory:
-  ```
-  - YourAwesomeMod/
-    - src/
-    - assets/
-    - ...
-    - lib/
-      - CustomJsonLib.jar
-  ```
-
-Assuming you're using Gradle as your build system, add the Jar file as a dependency in your mod's `build.gradle.kts`:
   ```kotlin
+  allprojects{
+    // ...
+    
+    repositories{
+      // ...
+      maven("https://raw.githubusercontent.com/ThePythonGuy3/CustomJSONLibMaven/main")
+      //...
+    }
+    
+    // ...
+  }
+
+  // ...
+
   project(":"){
     // ...
 
     dependencies{
       // ...
-      compileOnly(files(layout.projectDirectory.dir("lib").file("CustomJsonLib.jar")))
+      compileOnly("com.github.ThePythonGuy3.CustomJSONLib:pyguy.jsonlib:latest")
     }
 
     // ...
@@ -311,22 +312,13 @@ This mod is, in theory, cross-platform, but only Windows has been tested. The on
 |-----------------|-----------------------|-----------------------|-----------------------|------------|
 | Fully supported | Untested, should work | Untested, should work | Untested, should work | No support |
 
-### Building as a Library
-
-If you want to include this mod as a library for your own Java mods (explained in [How do I use this library?](#how-do-i-use-this-library) above) you're going to need a library `jar` file.
-
-The latest release can be found in Releases under the name `CustomJsonLib.jar`, but if you want to build your own, here are the steps:
-1. Open your terminal, and `cd` to your local copy of the mod.
-2. Ensure your internet connection is stable on the first or clean builds, as the project will try to fetch prerequisites from the internet.
-3. Run `gradlew lib` *(replace `gradlew` with `./gradlew` on Mac/Linux)*. This should create a JAR inside `build/libs/` that you can copy over to your mod's `lib/` folder to use it.
-
 ### Desktop Build
 
-Desktop builds are convenient for testing, but will obviously **not** work on Android, so never include this in your releases. Desktop JARs have `Desktop` suffixed to their name (`CustomJsonLibDesktop.jar`). Here's how you can build the mod:
+Desktop builds are convenient for testing, but they will **not** work on Android. Desktop JARs have `Desktop` suffixed to their name (`CustomJsonLibDesktop.jar`). Here's how you can build the mod:
 
 1. Open your terminal, and `cd` to your local copy of the mod.
 2. Ensure your internet connection is stable on the first or clean builds, as the project will try to fetch prerequisites from the internet.
-3. Run `gradlew jar` *(replace `gradlew` with `./gradlew` on Mac/Linux)*. This should create a JAR inside `build/libs/` that you can copy over to the Mindustry mods folder to install it.
+3. Run `gradlew jar` *(replace `gradlew` with `./gradlew` on Mac/Linux/Powershell)*. This should create a JAR inside `build/libs/` that you can copy over to the Mindustry mods folder to install it.
 4. You can also then run `gradlew install` to automatically install the mod JAR, or even `gradlew jar install` to do both compiling and installing at once.
 
 ### Android Build
@@ -334,7 +326,7 @@ Desktop builds are convenient for testing, but will obviously **not** work on An
 Android builds are automated on the CI hosted by GitHub Actions, so you should be able to just push a commit and wait for the CI to provide your build. If you still want to build locally, though, follow these steps.
 
 #### Installing Android SDK
-1. Install [Android SDK](https://developer.android.com/studio#command-line-tools-only), specifically the "**Command line tools only**" section. Download the tools that match your platform.
+1. Install the [Android SDK](https://developer.android.com/studio#command-line-tools-only), specifically the "**Command line tools only**" section. Download the tools that match your platform.
 2. Unzip the Android SDK command line tools inside a folder; let's call it `AndroidSDK/` for now.
 3. Inside this folder is a folder named `cmdline-tools/`. Put everything inside `cmdline-tools/` to a new folder named `latest/`, so that the folder structure looks like `AndroidSDK/cmdline-tools/latest/`.
 4. Open your terminal, `cd` to the `latest/` folder.
